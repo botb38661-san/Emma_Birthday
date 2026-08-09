@@ -410,8 +410,8 @@
             }
             const percentage = (transparentPixels / (canvas.width * canvas.height)) * 100;
 
-            // Auto Reveal if 45% is scratched!
-            if (percentage > 45) {
+            // Auto Reveal if 10% is scratched!
+            if (percentage > 10) {
                 isRevealed = true;
                 $(canvas).animate({opacity: 0}, 500, function(){ $(this).hide(); });
 
