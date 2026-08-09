@@ -1,0 +1,779 @@
+/* ===================================================================
+   DESIGN TOKENS
+   A late-evening birthday party sky: deep plum fading to rose, warm
+   gold candlelight as the accent, lilac for the playful bits.
+   =================================================================== */
+:root{
+  --bg-deep:   #1b0b2e;
+  --bg-mid:    #4a1942;
+  --bg-glow:   #ff6f9c;
+  --gold:      #ffd166;
+  --gold-deep: #d4a03a;
+  --cream:     #fff6ec;
+  --pink:      #ff5d8f;
+  --pink-soft: #ff9fbb;
+  --lilac:     #c9a6ff;
+
+  --card-glass:  rgba(255,255,255,0.08);
+  --card-border: rgba(255,255,255,0.20);
+  --shadow-glow: 0 0 60px rgba(255,111,156,0.25);
+
+  --font-display: 'Titan One', cursive;
+  --font-script:  'Dancing Script', cursive;
+  --font-body:    'Poppins', sans-serif;
+  --font-hand:    'Caveat', cursive;
+}
+
+*{ margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+
+html{ scroll-behavior:smooth; }
+
+body{
+  min-height:100vh;
+  font-family:var(--font-body);
+  color:var(--cream);
+  background:var(--bg-deep);
+  overflow-x:hidden;
+  position:relative;
+}
+
+button{ font-family:inherit; border:none; background:none; cursor:pointer; }
+img{ max-width:100%; display:block; }
+
+::selection{ background:var(--pink); color:var(--bg-deep); }
+
+:focus-visible{
+  outline:3px solid var(--gold);
+  outline-offset:3px;
+  border-radius:6px;
+}
+
+/* ===================================================================
+   AMBIENT SKY BACKGROUND
+   =================================================================== */
+.sky{
+  position:fixed;
+  inset:0;
+  z-index:-2;
+  background:
+    radial-gradient(circle at 15% 20%, rgba(255,209,102,0.10), transparent 40%),
+    radial-gradient(circle at 85% 15%, rgba(201,166,255,0.16), transparent 45%),
+    radial-gradient(circle at 50% 100%, rgba(255,111,156,0.30), transparent 55%),
+    linear-gradient(160deg, var(--bg-deep) 0%, var(--bg-mid) 55%, #2d0f3a 100%);
+  background-size:200% 200%;
+  animation:sky-drift 22s ease-in-out infinite alternate;
+}
+.sky::before, .sky::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  background-image:
+    radial-gradient(1.5px 1.5px at 10% 20%, #fff, transparent),
+    radial-gradient(1.5px 1.5px at 30% 70%, #fff, transparent),
+    radial-gradient(1px 1px at 60% 10%, #fff, transparent),
+    radial-gradient(1.5px 1.5px at 80% 40%, #fff, transparent),
+    radial-gradient(1px 1px at 45% 85%, #fff, transparent),
+    radial-gradient(1.5px 1.5px at 95% 80%, #fff, transparent),
+    radial-gradient(1px 1px at 25% 45%, #fff, transparent);
+  opacity:0.5;
+  animation:twinkle 4s ease-in-out infinite;
+}
+.sky::after{ animation-delay:2s; opacity:0.3; }
+
+@keyframes sky-drift{
+  0%{ background-position:0% 0%; }
+  100%{ background-position:100% 100%; }
+}
+@keyframes twinkle{
+  0%,100%{ opacity:0.25; }
+  50%{ opacity:0.7; }
+}
+
+/* ===================================================================
+   BUNTING GARLAND (replaces flag images)
+   =================================================================== */
+.garland{
+  position:relative;
+  display:flex;
+  justify-content:center;
+  gap:22px;
+  padding-top:18px;
+  z-index:5;
+}
+.garland span{
+  width:0; height:0;
+  border-left:16px solid transparent;
+  border-right:16px solid transparent;
+  border-top:26px solid var(--pink);
+  transform:rotate(180deg);
+  animation:pennant-sway 3s ease-in-out infinite;
+  filter:drop-shadow(0 3px 6px rgba(0,0,0,0.3));
+}
+.garland span:nth-child(2n){ border-top-color:var(--gold); animation-delay:0.2s; }
+.garland span:nth-child(3n){ border-top-color:var(--lilac); animation-delay:0.4s; }
+.garland span:nth-child(4n){ border-top-color:var(--pink-soft); animation-delay:0.6s; }
+@keyframes pennant-sway{
+  0%,100%{ transform:rotate(178deg); }
+  50%{ transform:rotate(184deg); }
+}
+
+/* ===================================================================
+   FLOATING LOVE-NOTE BUBBLES
+   =================================================================== */
+.bg-bubbles{
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  z-index:3;
+}
+.bubble{
+  position:absolute;
+  width:46px; height:46px;
+  border-radius:50%;
+  display:flex; align-items:center; justify-content:center;
+  font-size:1.1rem;
+  color:var(--gold);
+  background:var(--card-glass);
+  border:1px solid var(--card-border);
+  backdrop-filter:blur(6px);
+  pointer-events:auto;
+  cursor:pointer;
+  animation:bubble-float 13s ease-in-out infinite;
+  transition:transform .25s ease;
+}
+.bubble:hover{ transform:scale(1.15); }
+.bubble:nth-child(1){ left:6%;  top:22%; animation-duration:10s; }
+.bubble:nth-child(2){ left:88%; top:15%; animation-duration:12s; animation-delay:1s; }
+.bubble:nth-child(3){ left:10%; top:75%; animation-duration:11s; animation-delay:2s; }
+.bubble:nth-child(4){ left:90%; top:70%; animation-duration:9s;  animation-delay:0.5s; }
+
+@keyframes bubble-float{
+  0%,100%{ transform:translateY(0) rotate(0deg); }
+  50%{ transform:translateY(-24px) rotate(8deg); }
+}
+
+.toast{
+  display:none;
+  position:fixed;
+  left:50%; bottom:38px;
+  transform:translateX(-50%);
+  background:rgba(20,8,28,0.9);
+  color:var(--cream);
+  border:1px solid var(--card-border);
+  padding:12px 22px;
+  border-radius:999px;
+  font-size:0.95rem;
+  box-shadow:0 10px 30px rgba(0,0,0,0.35);
+  z-index:3000;
+  white-space:nowrap;
+}
+
+/* ===================================================================
+   LAYOUT
+   =================================================================== */
+#wrapper{
+  position:relative;
+  z-index:2;
+  width:100%;
+  min-height:100vh;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  padding:20px 20px 100px;
+}
+
+.content{
+  width:100%;
+  max-width:1100px;
+  margin-top:30px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:40px;
+  flex-wrap:wrap;
+}
+
+.left, .right{
+  flex:1 1 400px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  text-align:center;
+}
+
+/* ===================================================================
+   TITLE
+   =================================================================== */
+.title{ position:relative; margin-bottom:18px; }
+
+.text-row{
+  display:flex;
+  justify-content:center;
+  font-family:var(--font-display);
+  line-height:1;
+}
+.text-row span{
+  display:inline-block;
+  opacity:0;
+  transform:translateY(30px) rotate(8deg);
+  animation:letter-pop 0.6s cubic-bezier(.34,1.56,.64,1) forwards;
+  animation-delay:var(--t);
+  text-shadow:0 4px 0 rgba(0,0,0,0.25);
+}
+.happy span{ font-size:clamp(2.2rem, 6vw, 3.4rem); color:var(--gold); }
+.birthday span{ font-size:clamp(2.6rem, 8vw, 4.4rem); color:var(--pink); }
+.birthday span:nth-child(odd){ color:var(--pink-soft); }
+
+@keyframes letter-pop{
+  to{ opacity:1; transform:translateY(0) rotate(0deg); }
+}
+
+/* CSS party hat, sits on the headline */
+.hat{
+  position:absolute;
+  top:-38px; right:6%;
+  width:70px;
+  transform:rotate(18deg);
+  opacity:0;
+  animation:hat-drop 0.7s 1.6s cubic-bezier(.34,1.56,.64,1) forwards;
+}
+@keyframes hat-drop{
+  0%{ opacity:0; transform:translateY(-40px) rotate(18deg); }
+  100%{ opacity:1; transform:translateY(0) rotate(18deg); }
+}
+.hat-cone{
+  position:relative;
+  width:0; height:0;
+  margin:0 auto;
+  border-left:32px solid transparent;
+  border-right:32px solid transparent;
+  border-bottom:62px solid var(--pink);
+  filter:drop-shadow(0 4px 6px rgba(0,0,0,0.3));
+}
+.hat-cone .dot{
+  position:absolute;
+  width:7px; height:7px;
+  border-radius:50%;
+  background:var(--gold);
+  bottom:6px;
+}
+.hat-cone .d1{ left:-8px; }
+.hat-cone .d2{ left:-2px; bottom:22px; }
+.hat-cone .d3{ left:4px; bottom:38px; }
+.hat-pompom{
+  width:16px; height:16px;
+  border-radius:50%;
+  background:var(--gold);
+  margin:-2px auto 0;
+  box-shadow:0 0 10px rgba(255,209,102,0.8);
+}
+
+/* ===================================================================
+   DATE + BUTTONS
+   =================================================================== */
+.date__of__birth{
+  font-family:var(--font-script);
+  font-size:clamp(1.4rem, 3vw, 1.9rem);
+  color:var(--lilac);
+  min-height:2rem;
+  margin-bottom:20px;
+  letter-spacing:1px;
+}
+/* .date__of__birth span::after{
+  content:"|";
+  animation:blink 0.9s step-end infinite;
+  color:var(--gold);
+}
+@keyframes blink{ 50%{ opacity:0; } } */
+
+.pop-in-date, .pop-in-btn{
+  opacity:0;
+  transform:translateY(18px) scale(0.95);
+  animation:pop-in 0.6s cubic-bezier(.34,1.56,.64,1) forwards;
+}
+.pop-in-date{ animation-delay:3.5s; }
+.btn.pop-in-btn{ animation-delay:4.6s; }
+.extra-actions.pop-in-btn{ animation-delay:4.9s; }
+@keyframes pop-in{ to{ opacity:1; transform:translateY(0) scale(1); } }
+
+.shimmer-btn{
+  position:relative;
+  overflow:hidden;
+  display:inline-flex;
+  align-items:center;
+  gap:10px;
+  padding:15px 30px;
+  border-radius:999px;
+  font-weight:700;
+  font-size:1.05rem;
+  color:#3a0d24;
+  background:linear-gradient(120deg, var(--gold), var(--pink-soft), var(--gold));
+  background-size:200% auto;
+  box-shadow:0 10px 30px rgba(255,93,143,0.35);
+  transition:transform .2s ease, box-shadow .2s ease;
+  animation:shimmer 3.5s linear infinite;
+}
+.shimmer-btn:hover{ transform:translateY(-3px); box-shadow:0 14px 34px rgba(255,93,143,0.5); }
+.shimmer-btn i{ font-size:1.1rem; }
+@keyframes shimmer{
+  to{ background-position:200% center; }
+}
+
+.extra-actions{
+  display:flex;
+  gap:16px;
+  margin-top:18px;
+}
+.icon-btn{
+  width:54px; height:54px;
+  border-radius:50%;
+  display:flex; align-items:center; justify-content:center;
+  font-size:1.3rem;
+  color:var(--cream);
+  background:var(--card-glass);
+  border:1px solid var(--card-border);
+  backdrop-filter:blur(6px);
+  transition:transform .2s ease, background .2s ease, box-shadow .2s ease;
+}
+.icon-btn:hover{
+  transform:translateY(-4px) scale(1.06);
+  background:rgba(255,255,255,0.16);
+  box-shadow:0 10px 24px rgba(255,111,156,0.3);
+  color:var(--gold);
+}
+
+/* ===================================================================
+   PHOTO CARD (RIGHT SIDE)
+   =================================================================== */
+.slide-up-bottom{
+  opacity:0;
+  transform:translateY(50px);
+  animation:slide-up 0.8s 0.6s cubic-bezier(.22,1,.36,1) forwards;
+}
+@keyframes slide-up{ to{ opacity:1; transform:translateY(0); } }
+
+.box__account{
+  position:relative;
+  width:min(320px, 80vw);
+  padding:34px 26px 26px;
+  border-radius:28px;
+  background:var(--card-glass);
+  border:1px solid var(--card-border);
+  backdrop-filter:blur(10px);
+  box-shadow:var(--shadow-glow);
+  text-align:center;
+}
+
+.box__account .image{
+  position:relative;
+  width:170px; height:170px;
+  margin:0 auto 18px;
+  border-radius:50%;
+  padding:6px;
+  background:conic-gradient(from 0deg, var(--gold), var(--pink), var(--lilac), var(--gold));
+  box-shadow:0 0 0 6px rgba(255,255,255,0.06), 0 0 40px rgba(255,209,102,0.35);
+}
+.box__account .image::after{
+  content:"";
+  position:absolute;
+  inset:-14px;
+  border-radius:50%;
+  border:1px dashed rgba(255,246,236,0.35);
+  animation:ring-spin 14s linear infinite;
+}
+@keyframes ring-spin{ to{ transform:rotate(360deg); } }
+
+.box__account .image img{
+  width:100%; height:100%;
+  object-fit:cover;
+  border-radius:50%;
+  border:3px solid var(--bg-deep);
+}
+.photo-fallback{
+  display:none;
+  width:100%; height:100%;
+  border-radius:50%;
+  align-items:center;
+  justify-content:center;
+  font-size:3rem;
+  color:var(--pink-soft);
+  background:radial-gradient(circle, #3a1230, #23091d);
+  border:3px solid var(--bg-deep);
+}
+.image.no-photo .photo-fallback{ display:flex; }
+
+.float-anim{ animation:float 4s ease-in-out infinite; }
+@keyframes float{
+  0%,100%{ transform:translateY(0); }
+  50%{ transform:translateY(-10px); }
+}
+
+.box__account .name{
+  font-family:var(--font-script);
+  font-size:2.2rem;
+  color:var(--cream);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:10px;
+}
+.box__account .name i{ color:var(--pink); font-size:1.1rem; }
+.beat{ animation:beat 1.1s ease-in-out infinite; }
+@keyframes beat{
+  0%,100%{ transform:scale(1); }
+  25%{ transform:scale(1.25); }
+  40%{ transform:scale(1); }
+}
+
+/* CSS balloons */
+.balloon_one, .balloon_two{
+  position:absolute;
+  width:44px; height:56px;
+  border-radius:50% 50% 50% 50% / 60% 60% 40% 40%;
+  top:-30px;
+}
+.balloon_one{
+  left:-14px;
+  background:radial-gradient(circle at 30% 30%, #ffe08a, var(--gold-deep));
+}
+.balloon_two{
+  right:-14px;
+  background:radial-gradient(circle at 30% 30%, var(--pink-soft), var(--pink));
+}
+.balloon_one .string, .balloon_two .string{
+  position:absolute;
+  top:100%; left:50%;
+  width:1px; height:34px;
+  background:rgba(255,255,255,0.5);
+}
+.swing-right{ animation:swing 3.4s ease-in-out infinite; transform-origin:top center; }
+.swing-left{ animation:swing 3.8s ease-in-out infinite reverse; transform-origin:top center; }
+@keyframes swing{
+  0%,100%{ transform:rotate(-8deg); }
+  50%{ transform:rotate(8deg); }
+}
+
+/* Rotating stamp circle */
+.scale-in{
+  opacity:0;
+  transform:scale(0.6);
+  animation:scale-in 0.6s 1.2s cubic-bezier(.34,1.56,.64,1) forwards;
+}
+@keyframes scale-in{ to{ opacity:1; transform:scale(1); } }
+
+.cricle{
+  position:relative;
+  width:120px; height:120px;
+  margin:26px auto 0;
+  border-radius:50%;
+  border:2px dashed rgba(255,246,236,0.4);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+.text__cricle{
+  position:absolute;
+  inset:0;
+  animation:stamp-spin 9s linear infinite;
+}
+.text__cricle span{
+  position:absolute;
+  left:50%; top:50%;
+  font-size:0.7rem;
+  font-weight:700;
+  letter-spacing:1px;
+  color:var(--gold);
+  text-transform:uppercase;
+  transform:
+    rotate(calc(var(--i) * 24deg))
+    translate(0, -54px);
+  transform-origin:0 54px;
+}
+@keyframes stamp-spin{ to{ transform:rotate(360deg); } }
+.center-heart{
+  color:var(--pink);
+  font-size:1.6rem;
+  filter:drop-shadow(0 0 10px rgba(255,93,143,0.6));
+}
+
+/* ===================================================================
+   MODALS (shared)
+   =================================================================== */
+.modal-box{
+  display:none;
+  position:fixed;
+  inset:0;
+  z-index:4000;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+  background:rgba(10,4,16,0.72);
+  backdrop-filter:blur(6px);
+}
+
+.letter__border{
+  position:relative;
+  width:100%;
+  max-width:480px;
+  max-height:88vh;
+  overflow-y:auto;
+  padding:34px 26px;
+  border-radius:26px;
+  background:linear-gradient(160deg, #2b1030, #40133a);
+  border:1px solid var(--card-border);
+  box-shadow:0 30px 70px rgba(0,0,0,0.5);
+  transform:translateY(30px) scale(0.94);
+  opacity:0;
+  transition:transform .4s cubic-bezier(.22,1,.36,1), opacity .4s ease;
+}
+.letter__border.active{ transform:translateY(0) scale(1); opacity:1; }
+
+.close{
+  position:absolute;
+  top:16px; right:16px;
+  width:36px; height:36px;
+  border-radius:50%;
+  display:flex; align-items:center; justify-content:center;
+  background:rgba(255,255,255,0.1);
+  color:var(--cream);
+  transition:background .2s ease, transform .2s ease;
+}
+.close:hover{ background:rgba(255,255,255,0.2); transform:rotate(90deg); }
+
+.title__letter{
+  font-family:var(--font-script);
+  font-size:2rem;
+  color:var(--gold);
+  text-align:center;
+  min-height:2.4rem;
+  margin-bottom:18px;
+}
+
+.content__letter{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:16px;
+  text-align:center;
+}
+.content__letter .left{ position:relative; }
+.content__letter img#heart__letter{
+  width:90px;
+  border-radius:16px;
+  opacity:0;
+  transform:scale(0.6);
+  transition:opacity .4s ease, transform .4s ease;
+}
+.content__letter img#heart__letter.animationOp{ opacity:1; transform:scale(1); }
+
+.heart{
+  position:absolute;
+  font-size:0.9rem;
+  color:var(--pink);
+  opacity:0;
+}
+.heart_1{ top:-6px; left:-10px; }
+.heart_2{ top:-6px; right:-10px; }
+.heart_3{ bottom:-6px; left:-10px; }
+.heart_4{ bottom:-6px; right:-10px; }
+.heart.animation{
+  animation:heart-pop 1.4s var(--t) ease-in-out infinite;
+}
+@keyframes heart-pop{
+  0%,100%{ opacity:0; transform:translateY(0) scale(0.8); }
+  50%{ opacity:1; transform:translateY(-8px) scale(1.1); }
+}
+
+.love__img{
+  opacity:0;
+  transform:scale(0.7);
+  transition:opacity .5s ease, transform .5s ease;
+  border-radius:16px;
+  overflow:hidden;
+}
+.love__img.animationOp{ opacity:1; transform:scale(1); }
+.love__img img{ border-radius:16px; }
+
+.text__letter p{
+  font-family:var(--font-hand);
+  font-size:1.5rem;
+  line-height:1.5;
+  color:var(--cream);
+  min-height:3rem;
+}
+
+/* ===================================================================
+   3D CAKE MODAL
+   =================================================================== */
+.cake-card{ text-align:center; transition:background .5s ease, box-shadow .5s ease, border-color .5s ease; }
+.cake-title{ margin-bottom:6px; }
+.instruction{
+  font-size:0.95rem;
+  color:var(--lilac);
+  margin-top:14px;
+  transition:opacity .4s ease;
+}
+
+.cake-container{
+  perspective:700px;
+  padding:30px 0 10px;
+}
+.cake-3d{
+  position:relative;
+  width:180px;
+  margin:0 auto;
+  transform-style:preserve-3d;
+  transform:rotateX(8deg);
+  transition:filter .6s ease;
+}
+.cake-side{
+  width:180px; height:100px;
+  border-radius:14px 14px 30px 30px;
+  background:linear-gradient(180deg, #f3d9c4, #e0b48f);
+  box-shadow:inset 0 -14px 0 rgba(0,0,0,0.08), 0 20px 30px rgba(0,0,0,0.35);
+}
+.cake-top{
+  position:relative;
+  width:100%;
+  display:flex;
+  justify-content:center;
+}
+.frosting{
+  position:absolute;
+  top:-18px;
+  width:190px; height:36px;
+  left:50%; transform:translateX(-50%);
+  background:var(--cream);
+  border-radius:50%;
+  box-shadow:0 6px 0 rgba(0,0,0,0.05);
+}
+.frosting::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  background-image:repeating-radial-gradient(circle at 10px 10px, var(--pink-soft) 0 4px, transparent 4px 20px);
+  border-radius:50%;
+  opacity:0.7;
+}
+.candle{
+  position:relative;
+  width:10px; height:46px;
+  margin:-46px auto 0;
+  background:repeating-linear-gradient(180deg, var(--lilac) 0 8px, var(--gold) 8px 16px);
+  border-radius:3px;
+  z-index:2;
+}
+.flame{
+  position:absolute;
+  top:-20px; left:50%;
+  transform:translateX(-50%);
+  width:14px; height:22px;
+  border-radius:50% 50% 50% 50% / 65% 65% 35% 35%;
+  background:radial-gradient(circle at 50% 70%, #fff6c8, var(--gold) 55%, #ff8a3d 90%);
+  box-shadow:0 0 18px 6px rgba(255,209,102,0.7);
+  cursor:pointer;
+  animation:flicker 0.7s ease-in-out infinite alternate;
+}
+@keyframes flicker{
+  0%{ transform:translateX(-50%) scale(1) rotate(-2deg); }
+  100%{ transform:translateX(-50%) scale(1.08) rotate(2deg); }
+}
+
+.wish-text{
+  margin-top:16px;
+  font-family:var(--font-script);
+  font-size:1.5rem;
+  color:var(--gold);
+}
+.hidden{ display:none; }
+
+.letter__border.party-mode{
+  animation:party-glow 1.2s ease-in-out infinite alternate;
+}
+@keyframes party-glow{
+  0%{ box-shadow:0 0 40px rgba(255,0,110,0.35); }
+  100%{ box-shadow:0 0 60px rgba(131,56,236,0.45); }
+}
+
+/* ===================================================================
+   SCRATCH CARD MODAL
+   =================================================================== */
+.scratch-card-box{ text-align:center; }
+.scratch-container{
+  position:relative;
+  width:100%;
+  max-width:340px;
+  height:180px;
+  margin:20px auto 0;
+  border-radius:18px;
+  overflow:hidden;
+  background:linear-gradient(160deg, #3a1230, #55184a);
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,0.1);
+}
+.scratch-secret{
+  position:absolute;
+  inset:0;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:6px;
+  padding:16px;
+  transform:scale(0.85);
+  opacity:0.9;
+  transition:transform .4s cubic-bezier(.34,1.56,.64,1), opacity .4s ease;
+}
+.scratch-secret h3{
+  font-family:var(--font-script);
+  font-size:1.7rem;
+  color:var(--gold);
+}
+.scratch-secret p{
+  font-family:var(--font-hand);
+  font-size:1.25rem;
+  color:var(--cream);
+}
+.scratch-secret.pop-gift{ transform:scale(1); opacity:1; }
+
+#scratch-canvas{
+  position:absolute;
+  inset:0;
+  width:100%; height:100%;
+  cursor:grab;
+  touch-action:none;
+}
+.scratch-instruction{ color:var(--lilac); }
+
+/* ===================================================================
+   FOOTER CREDIT
+   =================================================================== */
+#copy{
+  position:fixed;
+  bottom:0; left:0; right:0;
+  text-align:center;
+  padding:10px;
+  font-size:0.8rem;
+  color:rgba(255,246,236,0.55);
+  background:linear-gradient(0deg, rgba(10,4,16,0.7), transparent);
+  z-index:10;
+}
+#copy a{ color:var(--pink-soft); text-decoration:none; }
+
+/* ===================================================================
+   RESPONSIVE
+   =================================================================== */
+@media (max-width: 640px){
+  .content{ flex-direction:column-reverse; gap:26px; }
+  .hat{ right:10%; }
+  .box__account{ width:min(280px, 86vw); }
+  .cake-3d, .cake-side{ width:150px; }
+  .frosting{ width:160px; }
+}
+
+@media (prefers-reduced-motion: reduce){
+  *{
+    animation-duration:0.001ms !important;
+    animation-iteration-count:1 !important;
+    transition-duration:0.001ms !important;
+  }
+}
